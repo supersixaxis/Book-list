@@ -4,7 +4,9 @@ export default function HeaderHomePage() {
   return (
     <div>
       <nav>
-        <p>Acceuil</p>
+        <Link to={"/"}>
+        <button>Acceuil</button>
+        </Link>
         <Link to={`/add-book`}>
               <button>Ajouter un livre</button>
             </Link>
