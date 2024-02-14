@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import fetchedBooks  from './books'
 import {BrowserRouter} from 'react-router-dom'
-const request = indexedDB.open('libaryDB', 2)
 
+const request = indexedDB.open('libraryDB', 2)
 request.onupgradeneeded = function(event) {
   let db = event.target.result;
-  let spaceStore = db.createObjectStore('books', { keyPath: "id" });
+  let booksStore = db.createObjectStore('books', { keyPath: "id" });
 
   fetchedBooks.forEach(book => {
-      spaceStore.put(book);
+    booksStore.put(book);
   });
 };
 
