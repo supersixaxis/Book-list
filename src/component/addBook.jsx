@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { updateBookIDB } from '../utils/bookServices';
-import { v4 as uuidv4 } from 'uuid';
-
+import { addBooksAPI } from '../api/BookAPI.js'
 export default function AddBook() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -10,15 +8,8 @@ export default function AddBook() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const newBook = {
-            id : uuidv4(),
-            title,
-            description,
-            category,
-            imageUrl
-        };
-        updateBookIDB(newBook);
-        
+        addBooksAPI(title, description, category, imageUrl) 
+        window.location.href = '/';
     };
 
     return (

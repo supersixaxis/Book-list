@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { updateBookIDB } from '../utils/bookServices';
+import { updateBooksAPI, getBookById } from '../api/BookAPI.js'
 export default function EditBook() {
     const { id } = useParams();
     const [title, setTitle] = useState('');
@@ -10,47 +10,25 @@ export default function EditBook() {
 
    
     useEffect(() => {
-      const fetchBookData = () => {
-          const request = indexedDB.open('libraryDB', 2);
+        const fetchBookDetails = async () => {
+            try {
+                const book = await getBookById(id);
+                setTitle(book.title);
+                setDescription(book.description);
+                setImageUrl(book.imageUrl);
+                setCategory(book.category);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des détails du livre :', error);
+            }
+        };
 
-          request.onsuccess = function(event) {
-              const db = event.target.result;
-              const transaction = db.transaction(['books'], 'readonly');
-              const bookStore = transaction.objectStore('books');
-              const getRequest = bookStore.get(parseInt(id));
-
-              getRequest.onsuccess = function() {
-                  const bookData = getRequest.result;
-                  setTitle(bookData.title);
-                  setDescription(bookData.description);
-                  setImageUrl(bookData.imageUrl);
-                  setCategory(bookData.category);
-              };
-
-              getRequest.onerror = function() {
-                  console.error('Erreur lors de la récupération des données du livre');
-              };
-          };
-
-          request.onerror = function() {
-              console.error('Erreur lors de l\'ouverture de la base de données');
-          };
-      };
-
-      fetchBookData();
-  }, [id]);
+        fetchBookDetails();
+    }, [id]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    const updatedBook = {
-        id: parseInt(id),
-        title: title,
-        description: description,
-        imageUrl: imageUrl,
-        category: category
-    };
-    updateBookIDB(updatedBook);
+    updateBooksAPI(id, title, description, category, imageUrl)
+    window.location.href = '/';
 };
 
     return (
